@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>清新科技 - 简单HTML网站</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo i {
+            color: #6dd5ed;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 25px;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        
+        nav ul li a:hover {
+            color: #6dd5ed;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .hero {
+            padding: 80px 0;
+            text-align: center;
+            background: linear-gradient(to right, #f8f9fa, #e9ecef);
+        }
+        
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            color: #182848;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            color: #555;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #4b6cb7;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid #4b6cb7;
+        }
+        
+        .btn:hover {
+            background: transparent;
+            color: #4b6cb7;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .features {
+            padding: 80px 0;
+            background-color: white;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            color: #182848;
+        }
+        
+        .section-title h2 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+        }
+        
+        .section-title p {
+            color: #777;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 4px solid #4b6cb7;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-card i {
+            font-size: 2.5rem;
+            color: #4b6cb7;
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            margin-bottom: 15px;
+            color: #182848;
+        }
+        
+        .feature-card p {
+            color: #666;
+        }
+        
+        .about {
+            padding: 80px 0;
+            background-color: #f1f5f9;
+        }
+        
+        .about-content {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            flex-wrap: wrap;
+        }
+        
+        .about-text {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .about-text h2 {
+            color: #182848;
+            margin-bottom: 20px;
+            font-size: 2.2rem;
+        }
+        
+        .about-text p {
+            margin-bottom: 20px;
+            color: #555;
+        }
+        
+        .about-image {
+            flex: 1;
+            min-width: 300px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s;
+        }
+        
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+        
+        .contact {
+            padding: 80px 0;
+            background-color: white;
+        }
+        
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f8f9fa;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4b6cb7;
+        }
+        
+        footer {
+            background-color: #182848;
+            color: white;
+            padding: 40px 0 20px;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: 30px;
+            padding: 0 15px;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 20px;
+            color: #6dd5ed;
+            font-size: 1.3rem;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .social-links a:hover {
+            background-color: #4b6cb7;
+            transform: translateY(-5px);
+        }
+        
+        .copyright {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            nav ul {
+                justify-content: center;
+            }
+            
+            nav ul li {
+                margin: 0 10px;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部导航 -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <i class="fas fa-laptop-code"></i>
+                <span>清新科技</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#home">首页</a></li>
+                    <li><a href="#features">功能</a></li>
+                    <li><a href="#about">关于</a></li>
+                    <li><a href="#contact">联系</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 主页横幅 -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>创建简洁美观的HTML网站</h1>
+            <p>学习如何使用HTML、CSS和JavaScript构建现代化网站。本示例展示了如何创建一个响应式、视觉吸引人的单页网站，无需任何框架。</p>
+            <a href="#features" class="btn">探索功能</a>
+        </div>
+    </section>
+
+    <!-- 功能区域 -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>主要功能</h2>
+                <p>我们的HTML网站模板包含了一系列现代网页开发的核心功能</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h3>响应式设计</h3>
+                    <p>自适应各种屏幕尺寸，从手机到桌面电脑都能完美显示，提供优秀的用户体验。</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-bolt"></i>
+                    <h3>快速加载</h3>
+                    <p>优化代码和资源，确保页面加载迅速，提高用户满意度和搜索引擎排名。</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-code"></i>
+                    <h3>简洁代码</h3>
+                    <p>清晰、语义化的HTML结构，易于维护和扩展，遵循现代网页开发最佳实践。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 关于区域 -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="section-title">
+                <h2>关于我们</h2>
+                <p>了解我们的使命和愿景</p>
+            </div>
+            <div class="about-content">
+                <div class="about-text">
+                    <h2>我们致力于简化网页开发</h2>
+                    <p>在清新科技，我们相信每个人都能创建出色的网站。我们的目标是提供简单、直观的工具和教程，帮助开发者快速构建现代化网站。</p>
+                    <p>这个示例网站完全使用纯HTML、CSS和少量JavaScript构建，展示了如何在不依赖复杂框架的情况下创建美观的网页。</p>
+                    <p>无论你是初学者还是有经验的开发者，我们的资源都将帮助你提升网页开发技能。</p>
+                    <a href="#contact" class="btn">联系我们</a>
+                </div>
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="团队合作">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系区域 -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="section-title">
+                <h2>联系我们</h2>
+                <p>有任何问题或建议？请随时与我们联系</p>
+            </div>
+            <div class="contact-form">
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label for="name">姓名</label>
+                        <input type="text" id="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">邮箱</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">留言</label>
+                        <textarea id="message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn">发送消息</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>清新科技</h3>
+                    <p>专注于提供简单、高效的网页开发解决方案和教育资源。</p>
+                </div>
+                <div class="footer-section">
+                    <h3>快速链接</h3>
+                    <ul style="list-style: none;">
+                        <li><a href="#home" style="color: #ccc; text-decoration: none;">首页</a></li>
+                        <li><a href="#features" style="color: #ccc; text-decoration: none;">功能</a></li>
+                        <li><a href="#about" style="color: #ccc; text-decoration: none;">关于</a></li>
+                        <li><a href="#contact" style="color: #ccc; text-decoration: none;">联系</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>关注我们</h3>
+                    <p>在社交媒体上获取最新更新</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 清新科技. 保留所有权利. | 本页面仅为HTML示例</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 简单的表单提交处理
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 获取表单数据
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+            
+            // 简单的验证
+            if(name && email && message) {
+                // 在实际应用中，这里会发送数据到服务器
+                alert(`感谢 ${name} 的留言！我们已经收到您的消息，会尽快回复。`);
+                document.getElementById('contactForm').reset();
+            } else {
+                alert('请填写所有字段！');
+            }
+        });
+        
+        // 平滑滚动到锚点
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if(targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if(window.scrollY > 100) {
+                header.style.backgroundColor = 'rgba(24, 40, 72, 0.95)';
+            } else {
+                header.style.backgroundColor = '';
+            }
+        });
+    </script>
+</body>
+</html>
