@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>视频生成与评测系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #4a6bff;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --dark-color: #343a40;
+            --light-color: #f8f9fa;
+            --sidebar-width: 250px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fb;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* 侧边栏样式 */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, #2c3e50, #1a2530);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+        
+        .logo {
+            text-align: center;
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .logo p {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        .menu {
+            margin-top: 20px;
+        }
+        
+        .menu-item {
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+        
+        .menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .menu-item.active {
+            background-color: rgba(74, 107, 255, 0.2);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .menu-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* 主内容区样式 */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .header h2 {
+            color: var(--dark-color);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .video-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .video-box {
+            flex: 1;
+            min-width: 300px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .video-placeholder {
+            width: 100%;
+            height: 200px;
+            background: #e9ecef;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .video-placeholder:hover {
+            background: #dee2e6;
+        }
+        
+        .video-box h3 {
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+        
+        .params-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .param-item {
+            margin-bottom: 15px;
+        }
+        
+        .param-item label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .param-item input, .param-item select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #3a5bed;
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        .metrics-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        
+        .metric-good {
+            color: var(--success-color);
+        }
+        
+        .metric-average {
+            color: var(--warning-color);
+        }
+        
+        .metric-poor {
+            color: var(--danger-color);
+        }
+        
+        .progress-container {
+            margin: 20px 0;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        .chart-container {
+            height: 300px;
+            margin-top: 20px;
+        }
+        
+        .results-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .result-card {
+            flex: 1;
+            min-width: 250px;
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-card h4 {
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+        
+        .result-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        
+        .history-item {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        
+        .history-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .video-container, .results-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="logo">
+                <h1>视频评测系统</h1>
+                <p>AI视频生成与质量评估</p>
+            </div>
+            <div class="menu">
+                <div class="menu-item active">
+                    <i class="fas fa-home"></i>
+                    <span>工作台</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-video"></i>
+                    <span>视频生成</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>评测指标</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-history"></i>
+                    <span>历史记录</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span>系统设置</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <div class="header">
+                <h2>视频生成与质量评测</h2>
+                <div class="user-info">
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=4a6bff&color=fff" alt="用户头像">
+                    <span>管理员</span>
+                </div>
+            </div>
+            
+            <!-- 视频生成区域 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">视频生成</div>
+                    <button class="btn btn-primary" id="generateBtn">
+                        <i class="fas fa-play-circle"></i> 开始生成
+                    </button>
+                </div>
+                
+                <div class="video-container">
+                    <div class="video-box">
+                        <h3>输入视频</h3>
+                        <div class="video-placeholder" id="inputVideo">
+                            <i class="fas fa-upload fa-2x"></i>
+                        </div>
+                        <p>点击上传或拖放视频文件</p>
+                    </div>
+                    
+                    <div class="video-box">
+                        <h3>生成结果</h3>
+                        <div class="video-placeholder" id="outputVideo">
+                            <i class="fas fa-film fa-2x"></i>
+                        </div>
+                        <p>生成完成后将显示在这里</p>
+                    </div>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress" id="progressBar"></div>
+                    </div>
+                    <p id="progressText">准备就绪</p>
+                </div>
+            </div>
+            
+            <!-- 参数配置区域 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">算法参数配置</div>
+                </div>
+                
+                <div class="params-container">
+                    <div class="param-item">
+                        <label for="algorithm">选择算法</label>
+                        <select id="algorithm">
+                            <option value="gan">GAN视频生成</option>
+                            <option value="vae">VAE视频生成</option>
+                            <option value="diffusion">扩散模型</option>
+                            <option value="transformer">Transformer模型</option>
+                        </select>
+                    </div>
+                    
+                    <div class="param-item">
+                        <label for="resolution">输出分辨率</label>
+                        <select id="resolution">
+                            <option value="480p">480p</option>
+                            <option value="720p">720p</option>
+                            <option value="1080p" selected>1080p</option>
+                            <option value="4k">4K</option>
+                        </select>
+                    </div>
+                    
+                    <div class="param-item">
+                        <label for="duration">视频时长(秒)</label>
+                        <input type="number" id="duration" value="10" min="1" max="60">
+                    </div>
+                    
+                    <div class="param-item">
+                        <label for="frameRate">帧率(fps)</label>
+                        <input type="number" id="frameRate" value="30" min="1" max="120">
+                    </div>
+                </div>
+                
+                <div class="params-container">
+                    <div class="param-item">
+                        <label for="style">视频风格</label>
+                        <select id="style">
+                            <option value="realistic">写实风格</option>
+                            <option value="cartoon">卡通风格</option>
+                            <option value="artistic">艺术风格</option>
+                            <option value="cinematic">电影风格</option>
+                        </select>
+                    </div>
+                    
+                    <div class="param-item">
+                        <label for="quality">生成质量</label>
+                        <select id="quality">
+                            <option value="low">低质量(快速)</option>
+                            <option value="medium" selected>中等质量</option>
+                            <option value="high">高质量</option>
+                            <option value="ultra">超高质量(慢速)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="param-item">
+                        <label for="enhancement">视频增强</label>
+                        <select id="enhancement">
+                            <option value="none">无增强</option>
+                            <option value="denoise">降噪</option>
+                            <option value="superres">超分辨率</option>
+                            <option value="color">色彩增强</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 评测指标区域 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">质量评测指标</div>
+                    <button class="btn btn-success" id="evaluateBtn">
+                        <i class="fas fa-chart-line"></i> 开始评测
+                    </button>
+                </div>
+                
+                <div class="metrics-container">
+                    <div class="metric-card">
+                        <h4>PSNR</h4>
+                        <div class="metric-value metric-good" id="psnrValue">--</div>
+                        <p>峰值信噪比</p>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <h4>SSIM</h4>
+                        <div class="metric-value metric-good" id="ssimValue">--</div>
+                        <p>结构相似性</p>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <h4>LPIPS</h4>
+                        <div class="metric-value metric-average" id="lpipsValue">--</div>
+                        <p>感知相似性</p>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <h4>FVD</h4>
+                        <div class="metric-value metric-poor" id="fvdValue">--</div>
+                        <p>弗雷谢视频距离</p>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="metricsChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- 结果与历史记录 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">生成结果与历史记录</div>
+                </div>
+                
+                <div class="results-container">
+                    <div class="result-card">
+                        <h4>本次生成结果</h4>
+                        <p>算法: <span id="resultAlgorithm">--</span></p>
+                        <p>分辨率: <span id="resultResolution">--</span></p>
+                        <p>生成时间: <span id="resultTime">--</span></p>
+                        <p>文件大小: <span id="resultSize">--</span></p>
+                        
+                        <div class="result-actions">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-download"></i> 下载视频
+                            </button>
+                            <button class="btn btn-success">
+                                <i class="fas fa-redo"></i> 重新生成
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <h4>历史记录</h4>
+                        <div class="history-list">
+                            <div class="history-item">
+                                <p><strong>风景视频生成</strong></p>
+                                <p>2023-07-20 14:30 | GAN算法</p>
+                            </div>
+                            <div class="history-item">
+                                <p><strong>人像视频增强</strong></p>
+                                <p>2023-07-19 10:15 | 扩散模型</p>
+                            </div>
+                            <div class="history-item">
+                                <p><strong>动画风格转换</strong></p>
+                                <p>2023-07-18 16:45 | Transformer</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟视频生成进度
+        document.getElementById('generateBtn').addEventListener('click', function() {
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            
+            let progress = 0;
+            progressBar.style.width = '0%';
+            progressText.textContent = '准备生成视频...';
+            
+            const interval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    progressText.textContent = '视频生成完成！';
+                    
+                    // 更新结果区域
+                    document.getElementById('resultAlgorithm').textContent = 
+                        document.getElementById('algorithm').options[document.getElementById('algorithm').selectedIndex].text;
+                    document.getElementById('resultResolution').textContent = 
+                        document.getElementById('resolution').value;
+                    document.getElementById('resultTime').textContent = new Date().toLocaleString();
+                    document.getElementById('resultSize').textContent = (Math.random() * 50 + 50).toFixed(1) + ' MB';
+                    
+                    // 模拟显示生成的视频
+                    document.getElementById('outputVideo').innerHTML = 
+                        '<i class="fas fa-check-circle fa-2x" style="color: #28a745;"></i><p>生成完成！点击预览</p>';
+                } else {
+                    progressText.textContent = `生成中... ${Math.round(progress)}%`;
+                }
+                progressBar.style.width = `${progress}%`;
+            }, 500);
+        });
+        
+        // 模拟评测过程
+        document.getElementById('evaluateBtn').addEventListener('click', function() {
+            // 更新指标值
+            document.getElementById('psnrValue').textContent = (Math.random() * 10 + 25).toFixed(2);
+            document.getElementById('ssimValue').textContent = (Math.random() * 0.3 + 0.7).toFixed(3);
+            document.getElementById('lpipsValue').textContent = (Math.random() * 0.2 + 0.1).toFixed(3);
+            document.getElementById('fvdValue').textContent = (Math.random() * 100 + 50).toFixed(1);
+            
+            // 更新图表
+            updateMetricsChart();
+        });
+        
+        // 初始化图表
+        let metricsChart;
+        
+        function initMetricsChart() {
+            const ctx = document.getElementById('metricsChart').getContext('2d');
+            metricsChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['视觉质量', '时间一致性', '细节保留', '运动自然度', '色彩准确度', '结构完整性'],
+                    datasets: [{
+                        label: '当前视频',
+                        data: [0, 0, 0, 0, 0, 0],
+                        backgroundColor: 'rgba(74, 107, 255, 0.2)',
+                        borderColor: 'rgba(74, 107, 255, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(74, 107, 255, 1)'
+                    }, {
+                        label: '基准视频',
+                        data: [85, 80, 75, 82, 78, 88],
+                        backgroundColor: 'rgba(108, 117, 125, 0.2)',
+                        borderColor: 'rgba(108, 117, 125, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(108, 117, 125, 1)'
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
+                    }
+                }
+            });
+        }
+        
+        function updateMetricsChart() {
+            const newData = [
+                Math.random() * 20 + 70,  // 视觉质量
+                Math.random() * 20 + 65,  // 时间一致性
+                Math.random() * 20 + 75,  // 细节保留
+                Math.random() * 20 + 70,  // 运动自然度
+                Math.random() * 20 + 80,  // 色彩准确度
+                Math.random() * 20 + 75   // 结构完整性
+            ];
+            
+            metricsChart.data.datasets[0].data = newData;
+            metricsChart.update();
+        }
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initMetricsChart();
+            
+            // 模拟上传视频
+            document.getElementById('inputVideo').addEventListener('click', function() {
+                alert('视频上传功能将在实际系统中实现');
+                this.innerHTML = '<i class="fas fa-check-circle fa-2x" style="color: #28a745;"></i><p>视频已上传</p>';
+            });
+            
+            document.getElementById('outputVideo').addEventListener('click', function() {
+                if (this.innerHTML.includes('生成完成')) {
+                    alert('视频预览功能将在实际系统中实现');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
